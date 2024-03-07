@@ -1,11 +1,11 @@
 from pathlib import Path
-from tempfile import TemporaryDirectory
 
-from swe_repair import IsolatedWorkspace
+from swe_repair import DockerRunner, RepairAgent, ScriptedPatchProposer
+from swe_repair.catalog import load_catalog
 
-with TemporaryDirectory() as directory:
-    source = Path(directory)
-    (source / "example.py").write_text("answer = 42\n")
-    with IsolatedWorkspace(source) as workspace:
-        assert (workspace.repo / "example.py").read_text() == "answer = 42\n"
-print("isolated workspace smoke passed")
+root = Path(__file__).resolve().parents[1]
+bug = load_catalog(root / "data" / "bugs")[0]
+report = RepairAgent(DockerRunner(), ScriptedPatchProposer()).repair(bug)
+assert report.resolved, report.stop_reason
+assert report.workspace_cleaned
+print(f"{bug.id}: resolved; Docker pytest exit={report.candidates[-1].validation.returncode}")
