@@ -1,0 +1,22 @@
+{
+  "localization": {
+    "path": "metrics.py",
+    "line": 8,
+    "probe": "from metrics import median; actual = median([1, 2, 3, 4]); assert actual == 2.5, f'even median returned {actual}'",
+    "rationale": "The even-count branch returns only the upper middle value; execute it directly."
+  },
+  "patches": [
+    {
+      "path": "metrics.py",
+      "old": "    if len(ordered) % 2:\n        return float(ordered[middle])\n    return float(ordered[middle])\n",
+      "new": "    if len(ordered) % 2:\n        return float(ordered[middle])\n    return float(ordered[middle - 1])\n",
+      "rationale": "A deliberately incorrect first candidate chooses the lower middle value."
+    },
+    {
+      "path": "metrics.py",
+      "old": "    if len(ordered) % 2:\n        return float(ordered[middle])\n    return float(ordered[middle])\n",
+      "new": "    if len(ordered) % 2:\n        return float(ordered[middle])\n    return (ordered[middle - 1] + ordered[middle]) / 2\n",
+      "rationale": "Average both middle values for an even-sized sample."
+    }
+  ]
+}
