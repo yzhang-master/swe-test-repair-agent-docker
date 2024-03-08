@@ -1,0 +1,16 @@
+{
+  "localization": {
+    "path": "text.py",
+    "line": 4,
+    "probe": "from text import normalize_whitespace; actual = normalize_whitespace('  alpha\\t beta\\n'); assert actual == 'alpha beta', repr(actual)",
+    "rationale": "The probe demonstrates that stripping only spaces leaves internal whitespace unchanged."
+  },
+  "patches": [
+    {
+      "path": "text.py",
+      "old": "    return text.strip(\" \")\n",
+      "new": "    return \" \".join(text.split())\n",
+      "rationale": "Split on arbitrary whitespace and join with one canonical space."
+    }
+  ]
+}
