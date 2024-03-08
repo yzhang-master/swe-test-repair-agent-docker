@@ -1,0 +1,16 @@
+{
+  "localization": {
+    "path": "batches.py",
+    "line": 4,
+    "probe": "from batches import chunked; actual = chunked([1, 2, 3, 4, 5], 2); assert actual == [[1, 2], [3, 4], [5]], actual",
+    "rationale": "A concrete two-item chunk probe exposes skipped start positions."
+  },
+  "patches": [
+    {
+      "path": "batches.py",
+      "old": "range(0, len(values), size + 1)",
+      "new": "range(0, len(values), size)",
+      "rationale": "Advance by exactly the chunk size so no input item is skipped."
+    }
+  ]
+}
